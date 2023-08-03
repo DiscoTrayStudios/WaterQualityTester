@@ -98,6 +98,10 @@ flutter:
     - assets/icons/three.png     #https://commons.wikimedia.org/wiki/File:Eo_circle_blue_number-3.svg
     - assets/icons/four.png      #https://commons.wikimedia.org/wiki/File:Eo_circle_blue_number-4.svg
     - assets/icons/logo1.jpg
+    - assets/colorkeyasset.png
+    - assets/colorkey2asset.png
+    - assets/colorkey2.png
+    - assets/colorkey3asset.jpg
     
   
 

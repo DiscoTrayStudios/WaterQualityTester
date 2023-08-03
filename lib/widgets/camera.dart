@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/services.dart';
 
 import 'package:water_quality_app/pages/image_color_grid.dart';
 import 'package:water_quality_app/main.dart';
+import 'package:water_test_scanner/water_test_scanning.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({Key? key}) : super(key: key);
@@ -69,6 +71,16 @@ class _CameraPageState extends State<CameraPage> {
     super.dispose();
   }
 
+  Future<ColorDetectionResult> scanColors(String path) async {
+    final ByteData keyBytes =
+        await rootBundle.load('assets/colorkey3asset.jpg');
+    Uint8List keyList = keyBytes.buffer.asUint8List();
+    ColorDetectionResult results =
+        await ColorStripDetector.detectColors(path, keyList);
+    print(results.colors);
+    return results;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,12 +133,13 @@ class _CameraPageState extends State<CameraPage> {
 
               if (!mounted) return;
 
+              ColorDetectionResult result = await scanColors(imageFile.path);
+
               // If the picture was taken, display with results
               await Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => RGBImageCheckPage(
-                    image: imageFile,
-                  ),
+                  builder: (context) =>
+                      RGBImageCheckPage(image: imageFile, result: result),
                 ),
               );
             }

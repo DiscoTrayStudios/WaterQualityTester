@@ -9,16 +9,10 @@ class RGBImageCheckPage extends StatelessWidget {
   // image from camera
   final File image;
 
-  const RGBImageCheckPage({super.key, required this.image});
+  const RGBImageCheckPage(
+      {super.key, required this.image, required this.result});
 
-  void _scanAndShowResults(BuildContext context) {
-    ColorStripDetector.detectColors(image.path).then(
-      (cdr) => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ResultsPage(results: cdr)),
-      ),
-    );
-  }
+  final ColorDetectionResult result;
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +21,13 @@ class RGBImageCheckPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.file(image),
+            result.image,
             ElevatedButton(
               child: const Text("View Results"),
-              onPressed: () => _scanAndShowResults(context),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ResultsPage(results: result)));
+              },
             ),
           ],
         ),
