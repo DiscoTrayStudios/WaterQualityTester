@@ -19,7 +19,7 @@ class ChemicalStandard {
     required this.lo,
     required this.hi,
     required this.description,
-    this.swatches,
+    required this.swatches,
     this.units,
   });
 
@@ -41,7 +41,7 @@ class ChemicalStandard {
   /// for pH.
   final String? units;
 
-  final List<CSElement>? swatches;
+  final List<CSElement> swatches;
 
   /// Returns `true` if [value] is within the acceptable range for this
   /// standard (inclusive of endpoints).

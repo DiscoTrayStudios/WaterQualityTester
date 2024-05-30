@@ -14,27 +14,34 @@ class ChemicalResultListing extends StatefulWidget {
 }
 
 class _ChemicalResultListingState extends State<ChemicalResultListing> {
-  bool get isStandardMet =>
-      widget.standard.isValueInRange(double.parse(widget.controller.text));
-  int value = 0;
+  bool get isStandardMet => widget.standard.isValueInRange(
+      widget.standard.swatches[int.parse(widget.controller.text)].value);
 
   Widget CustomRadioButton(Color wcolor, int index) {
     return GestureDetector(
       onTap: () {
         setState(() {
-          value = index;
+          widget.controller.text = index.toString();
         });
       },
       child: Container(
-        height: 40.0,
-        width: 40.0,
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        height: 35.0,
+        width: 35.0,
         decoration: BoxDecoration(
             color: wcolor,
             border: Border.all(
-              color: value == index ? Colors.black : Colors.white,
+              width: widget.standard
+                      .isValueInRange(widget.standard.swatches[index].value)
+                  ? 1
+                  : 2,
+              color: widget.standard
+                      .isValueInRange(widget.standard.swatches[index].value)
+                  ? Colors.grey
+                  : Color.fromARGB(255, 248, 3, 3),
             ),
             borderRadius: const BorderRadius.all(Radius.circular(5))),
-        child: index == value
+        child: index == double.parse(widget.controller.text)
             ? Icon(Icons.check,
                 color: wcolor.computeLuminance() > 0.179
                     ? Colors.black
@@ -46,33 +53,31 @@ class _ChemicalResultListingState extends State<ChemicalResultListing> {
 
   @override
   Widget build(BuildContext context) {
-    const resultColor = Color.fromARGB(255, 6, 6, 6);
-
     return
         //Expanded(
         //child:
         Card(
       child: ListTile(
-        tileColor: isStandardMet
+        /*tileColor: isStandardMet
             ? const Color.fromARGB(255, 182, 214, 204)
             : const Color.fromARGB(255, 255, 200, 200),
-        title: Row(
-          children: [
-            CustomRadioButton(Colors.red, 1),
-            const SizedBox(width: 10),
-            CustomRadioButton(Colors.green, 2),
-            const SizedBox(width: 10),
-            CustomRadioButton(Colors.blue, 3),
-            const SizedBox(width: 10),
-            CustomRadioButton(Colors.black, 4),
-            const SizedBox(width: 10),
-          ],
+            */
+        title: Container(
+          height: 35,
+          child: ListView.builder(
+              // This next line does the trick.
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.standard.swatches.length,
+              itemBuilder: (context, index) {
+                return CustomRadioButton(
+                    widget.standard.swatches[index].color, index);
+              }),
         ),
         subtitle: Row(
           children: [
+            Text(
+                '${widget.standard.name}: ${widget.standard.swatches[int.parse(widget.controller.text)].value}'),
             const Spacer(),
-            Text(widget.standard.name),
-            const SizedBox(width: 10),
             Text(
                 'Ideal: ${widget.standard.lo}-${widget.standard.hi} ${widget.standard.units ?? ''}'),
           ],
