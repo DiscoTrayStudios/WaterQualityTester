@@ -13,7 +13,11 @@ import 'package:water_quality_app/widgets/chemical_result_listing.dart';
 import '../objects/app_state.dart';
 
 class ResultsPage extends StatefulWidget {
-  const ResultsPage({super.key, required this.image, required this.waterType, required this.waterInfo});
+  const ResultsPage(
+      {super.key,
+      required this.image,
+      required this.waterType,
+      required this.waterInfo});
 
   final File image;
 
@@ -25,7 +29,6 @@ class ResultsPage extends StatefulWidget {
 }
 
 class _ResultsPagePageState extends State<ResultsPage> {
-
   List<TextEditingController> textFieldControllers = List.empty(growable: true);
 
   static const resultsPageTextStyle = TextStyle(
@@ -55,20 +58,25 @@ class _ResultsPagePageState extends State<ResultsPage> {
 
   // created method for getting user current location
   Future<Position> getUserCurrentLocation() async {
-    await Geolocator.requestPermission()
-        .then((value) {debugPrint(value.toString());})
-        .onError((error, stackTrace) async {
+    await Geolocator.requestPermission().then((value) {
+      debugPrint(value.toString());
+    }).onError((error, stackTrace) async {
       await Geolocator.requestPermission();
       debugPrint("ERROR $error");
     });
     debugPrint("requested permissions");
-    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best, timeLimit: const Duration(seconds: 15), forceAndroidLocationManager: true);
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+        timeLimit: const Duration(seconds: 15),
+        forceAndroidLocationManager: true);
   }
 
   @override
   Widget build(BuildContext context) {
-    for (var i = 0; i < 16; i++) {
-      textFieldControllers.add(TextEditingController(text: "0"));
+    if (textFieldControllers.length < 16) {
+      for (var i = 0; i < 16; i++) {
+        textFieldControllers.add(TextEditingController(text: "0"));
+      }
     }
     return Scaffold(
       appBar: AppBar(
@@ -135,15 +143,25 @@ class _ResultsPagePageState extends State<ResultsPage> {
                       Position loc = await getUserCurrentLocation();
                       //Position loc = Position(longitude: 10, latitude: 10, timestamp: DateTime.now(), accuracy: 0, altitude: 0, altitudeAccuracy: 0, heading: 0, headingAccuracy: 0, speed: 0, speedAccuracy: 0);
                       debugPrint(loc.toString());
-                      await appState.addStrip(widget.image, textFieldControllers.map((controller) {return double.parse(controller.text);}).toList(), loc, widget.waterType, DateTime.now());
+                      await appState.addStrip(
+                          widget.image,
+                          textFieldControllers.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            TextEditingController controller = entry.value;
+                            return epaStandards[index]
+                                .swatches[int.parse(controller.text)]
+                                .value;
+                          }).toList(),
+                          loc,
+                          widget.waterType,
+                          DateTime.now());
                       debugPrint("added to database");
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SourceDescriptionPage(),
-                          ),
-                        );
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SourceDescriptionPage(),
+                        ),
+                      );
                     },
                   );
                 }),
