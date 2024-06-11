@@ -39,7 +39,7 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
         appBar: AppBar(
             centerTitle: true,
             backgroundColor: const Color(0xffB6D6CC),
-            title: const Text("Water Source Description",
+            title: const Text("Water Source",
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 28,
@@ -50,7 +50,7 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
         body: Center(
             child: Column(children: [
           const SizedBox(
-            height: 30,
+            height: 10,
           ),
           Expanded(
               child: Padding(
@@ -170,7 +170,7 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
                                             color: Colors.black,
                                             icon:
                                                 const Icon(Icons.arrow_forward),
-                                            iconSize: 100,
+                                            iconSize: 60,
                                             onPressed: () {
                                               if (_dropdownFormKey.currentState!
                                                   .validate()) {
@@ -256,7 +256,7 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
                                           "next",
                                           style: TextStyle(
                                               color: Colors.black,
-                                              fontSize: 25,
+                                              fontSize: 18,
                                               fontFamily: "Comfortaa"),
                                         ),
                                         const SizedBox(

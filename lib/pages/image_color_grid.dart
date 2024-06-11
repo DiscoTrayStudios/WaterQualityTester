@@ -9,7 +9,10 @@ class RGBImageCheckPage extends StatelessWidget {
   final File image;
 
   const RGBImageCheckPage(
-      {super.key, required this.image, required this.waterType, required this.waterInfo});
+      {super.key,
+      required this.image,
+      required this.waterType,
+      required this.waterInfo});
 
   final String waterType;
   final String waterInfo;
@@ -18,18 +21,29 @@ class RGBImageCheckPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Image(image: FileImage(image)),
-            ElevatedButton(
-              child: const Text("View Results"),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ResultsPage(image: image, waterType: waterType, waterInfo: waterInfo,)));
-              },
-            ),
-          ],
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 400,
+                child: Image(image: FileImage(image)),
+              ),
+              ElevatedButton(
+                child: const Text("Enter Results"),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ResultsPage(
+                                image: image,
+                                waterType: waterType,
+                                waterInfo: waterInfo,
+                              )));
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
