@@ -10,7 +10,6 @@ import 'package:uuid/uuid.dart';
 
 /// The state of the app, containing globally used variables and functions.
 class AppState extends ChangeNotifier {
-  
   FirebaseAuth auth;
 
   FirebaseFirestore firestore;
@@ -22,26 +21,28 @@ class AppState extends ChangeNotifier {
   AppState(this.firestore, this.auth, this.storage);
 
   Future<void> addStrip(File image, List<double> colors, Position loc,
-      String waterType, DateTime timestamp) async {
+      String waterType, String waterInfo, DateTime timestamp) async {
     var record = firestore.collection("testInstances");
     final imageLink = await uploadImage(image);
-    record.doc().set(toFirebaseRecord(
-      imageLink,
-      colors,
-      loc.latitude,
-      loc.longitude,
-      waterType,
-      timestamp));
+    record.doc().set(toFirebaseRecord(imageLink, colors, loc.latitude,
+        loc.longitude, waterType, waterInfo, timestamp));
   }
 
   Map<String, dynamic> toFirebaseRecord(
-    String imageLink, List<double> colors, double latitude, double longitude, String waterType, DateTime timestamp){
+      String imageLink,
+      List<double> colors,
+      double latitude,
+      double longitude,
+      String waterType,
+      String waterInfo,
+      DateTime timestamp) {
     return {
       "image": imageLink,
       "timestamp": timestamp.microsecondsSinceEpoch,
       "latitude": latitude,
       "longitude": longitude,
       "Water Type": waterType,
+      "Water Info": waterInfo,
       "pH": colors[0],
       "Hardness": colors[1],
       "Hydrogen Sulfide": colors[2],
@@ -50,6 +51,7 @@ class AppState extends ChangeNotifier {
       "Lead": colors[5],
       "Manganese": colors[6],
       "Total Chlorine": colors[7],
+      // Is it really?
       "Mercury": colors[8],
       "Nitrate": colors[9],
       "Nitrite": colors[10],

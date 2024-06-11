@@ -154,6 +154,7 @@ class _ResultsPagePageState extends State<ResultsPage> {
                           }).toList(),
                           loc,
                           widget.waterType,
+                          widget.waterInfo,
                           DateTime.now());
                       debugPrint("added to database");
                       Navigator.push(

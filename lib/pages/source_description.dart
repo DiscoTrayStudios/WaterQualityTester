@@ -15,6 +15,7 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
           123, 231, 96, 1)); // I want to make this button stand out
 
   String? selectedValue;
+  String waterInfo = "";
   final _dropdownFormKey = GlobalKey<FormState>();
 
   // style cards for listview
@@ -130,6 +131,9 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
                                                   fontFamily: "Comfortaa"),
                                             ),
                                             TextFormField(
+                                              onChanged: (value) {
+                                                waterInfo = value;
+                                              },
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
@@ -196,7 +200,12 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
                                                               MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
-                                                                        WaterInstructionPage(waterType: selectedValue!, waterInfo: "",),
+                                                                        WaterInstructionPage(
+                                                                  waterType:
+                                                                      selectedValue!,
+                                                                  waterInfo:
+                                                                      waterInfo,
+                                                                ),
                                                               ),
                                                               (route) => false,
                                                             );
@@ -228,7 +237,11 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) =>
-                                                          WaterInstructionPage(waterType: selectedValue!, waterInfo: "",),
+                                                          WaterInstructionPage(
+                                                        waterType:
+                                                            selectedValue!,
+                                                        waterInfo: waterInfo,
+                                                      ),
                                                     ),
                                                   );
                                                 }

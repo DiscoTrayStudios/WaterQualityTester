@@ -38,7 +38,7 @@ class _ChemicalResultListingState extends State<ChemicalResultListing> {
               color: widget.standard
                       .isValueInRange(widget.standard.swatches[index].value)
                   ? Colors.grey
-                  : Color.fromARGB(255, 248, 3, 3),
+                  : const Color.fromARGB(255, 248, 3, 3),
             ),
             borderRadius: const BorderRadius.all(Radius.circular(5))),
         child: index == double.parse(widget.controller.text)
@@ -62,7 +62,7 @@ class _ChemicalResultListingState extends State<ChemicalResultListing> {
             ? const Color.fromARGB(255, 182, 214, 204)
             : const Color.fromARGB(255, 255, 200, 200),
             */
-        title: Container(
+        title: SizedBox(
           height: 35,
           child: ListView.builder(
               // This next line does the trick.
