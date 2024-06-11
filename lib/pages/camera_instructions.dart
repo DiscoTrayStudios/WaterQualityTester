@@ -17,8 +17,6 @@ class CameraInstructionPage extends StatelessWidget {
 
   // style cards for listview
   final EdgeInsets margin = const EdgeInsets.symmetric(vertical: 10);
-  final TextStyle textstyle = const TextStyle(
-      fontSize: 20, fontStyle: FontStyle.italic, fontFamily: "Sans");
 
   @override
   Widget build(BuildContext context) {
@@ -42,49 +40,52 @@ class CameraInstructionPage extends StatelessWidget {
             ),
             Container(
                 color: const Color(0xffDDCFD9),
-                child: Column(
+                child: const Column(
                   children: [
-                    const SizedBox(
+                    SizedBox(
                       height: 20,
                     ),
-                    const Center(
+                    Center(
                         child: Text("camera instructions",
                             style: TextStyle(
                                 fontFamily: "Comfortaa",
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700))),
-                    const SizedBox(
+                    SizedBox(
                       height: 10,
                     ),
                     ListTile(
                       // this tile needs to stand out
                       title: Text("Note: TAKE PICTURES USING A DARK BACKGROUND",
-                          style: textstyle),
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontStyle: FontStyle.italic,
+                              fontFamily: "Sans")),
                     ),
-                    const SizedBox(height: 10),
-                    const Instructions(
+                    SizedBox(height: 10),
+                    Instructions(
                         number: "1",
                         text: "Use the camera in a VERTICAL ORIENTATION"),
-                    const SizedBox(height: 10),
-                    const Instructions(
+                    SizedBox(height: 10),
+                    Instructions(
                         number: "2",
                         text:
                             "Lineup the water test strip within the border of the overlay"),
-                    const SizedBox(height: 10),
-                    const Instructions(
+                    SizedBox(height: 10),
+                    Instructions(
                       number: "3",
                       text:
                           "IMPORTANT!!! Put the white part of the test strip at the very top of the image preview",
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 10,
                     ),
-                    const Instructions(
+                    Instructions(
                       number: "4",
                       text:
                           "Make sure to use a DARK background (preferably black)",
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 10,
                     ),
                   ],

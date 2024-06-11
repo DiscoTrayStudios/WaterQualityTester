@@ -17,8 +17,6 @@ class WaterInstructionPage extends StatelessWidget {
 
   // style cards for listview
   final EdgeInsets margin = const EdgeInsets.symmetric(vertical: 10);
-  final TextStyle textstyle = const TextStyle(
-      fontSize: 16, fontStyle: FontStyle.italic, fontFamily: "Sans");
 
   @override
   Widget build(BuildContext context) {
