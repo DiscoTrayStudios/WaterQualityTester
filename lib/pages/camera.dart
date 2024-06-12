@@ -6,7 +6,8 @@ import 'package:water_quality_app/pages/image_color_grid.dart';
 import 'package:water_quality_app/main.dart';
 
 class CameraPage extends StatefulWidget {
-  const CameraPage({Key? key, required this.waterType, required this.waterInfo}) : super(key: key);
+  const CameraPage(
+      {super.key, required this.waterType, required this.waterInfo});
 
   final String waterType;
   final String waterInfo;
@@ -127,8 +128,10 @@ class _CameraPageState extends State<CameraPage> {
               // If the picture was taken, display with results
               await Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) =>
-                      RGBImageCheckPage(image: imageFile, waterType: widget.waterType, waterInfo: widget.waterInfo),
+                  builder: (context) => RGBImageCheckPage(
+                      image: imageFile,
+                      waterType: widget.waterType,
+                      waterInfo: widget.waterInfo),
                 ),
               );
             }

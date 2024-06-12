@@ -3,7 +3,7 @@ import 'package:water_quality_app/pages/test_strip_instructions.dart';
 import 'package:water_quality_app/widgets/buttons.dart';
 
 class SourceDescriptionPage extends StatefulWidget {
-  const SourceDescriptionPage({Key? key}) : super(key: key);
+  const SourceDescriptionPage({super.key});
   @override
   State<SourceDescriptionPage> createState() => _SourceDescriptionPageState();
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:water_quality_app/widgets/buttons.dart';
-import 'package:water_quality_app/widgets/camera.dart';
+import 'package:water_quality_app/pages/camera.dart';
 import 'package:water_quality_app/widgets/instructions.dart';
 
 class CameraInstructionPage extends StatelessWidget {

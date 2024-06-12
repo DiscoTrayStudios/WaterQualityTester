@@ -143,7 +143,7 @@ class _ResultsPagePageState extends State<ResultsPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SourceDescriptionPage(),
+                          builder: (context) => const SourceDescriptionPage(),
                         ),
                       );
                     },

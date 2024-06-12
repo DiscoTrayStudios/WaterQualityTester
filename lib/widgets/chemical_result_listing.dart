@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:water_quality_app/objects/chemical_standard.dart';
 
@@ -58,10 +57,6 @@ class _ChemicalResultListingState extends State<ChemicalResultListing> {
         //child:
         Card(
       child: ListTile(
-        /*tileColor: isStandardMet
-            ? const Color.fromARGB(255, 182, 214, 204)
-            : const Color.fromARGB(255, 255, 200, 200),
-            */
         title: SizedBox(
           height: 35,
           child: ListView.builder(
@@ -98,7 +93,6 @@ class _ChemicalResultListingState extends State<ChemicalResultListing> {
                 ),
               ),
       ),
-      //),
     );
   }
 }
