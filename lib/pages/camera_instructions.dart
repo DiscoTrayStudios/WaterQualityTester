@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:water_quality_app/widgets/buttons.dart';
 import 'package:water_quality_app/widgets/camera.dart';
 import 'package:water_quality_app/widgets/instructions.dart';
 
@@ -91,47 +92,19 @@ class CameraInstructionPage extends StatelessWidget {
                   ],
                 )),
             const SizedBox(height: 20),
-            SizedBox(
-                child: Column(
-                    //height: 100.0,
-                    //width: 18.0,
-                    children: [
-                  Ink(
-                    decoration: const ShapeDecoration(
-                      color: Color(0xffB6D6CC),
-                      shape: CircleBorder(),
+            NavButton(
+              text: "open camera",
+              icon: Icons.camera_alt,
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CameraPage(
+                          waterType: waterType, waterInfo: waterInfo),
                     ),
-                    child: IconButton(
-                      key: const Key('cameraButton'),
-                      padding: const EdgeInsets.all(10),
-                      color: Colors.black,
-                      icon: const Icon(Icons.camera_alt),
-                      iconSize: 60,
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CameraPage(
-                                  waterType: waterType, waterInfo: waterInfo),
-                            ),
-                            (route) => false);
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
-                    "open camera",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontFamily: "Comfortaa"),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                ])),
+                    (route) => false);
+              },
+            ),
           ],
         ));
   }

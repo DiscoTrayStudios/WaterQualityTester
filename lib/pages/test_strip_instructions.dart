@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:water_quality_app/pages/camera_instructions.dart';
+import 'package:water_quality_app/widgets/buttons.dart';
 import 'package:water_quality_app/widgets/instructions.dart';
 
 class WaterInstructionPage extends StatelessWidget {
@@ -79,50 +80,21 @@ class WaterInstructionPage extends StatelessWidget {
                   ),
                 ])),
             const SizedBox(height: 20),
-            SizedBox(
-                child: Column(
-                    //height: 100.0,
-                    //width: 18.0,
-                    children: [
-                  Ink(
-                    decoration: const ShapeDecoration(
-                      color: Color(0xffB6D6CC),
-                      shape: CircleBorder(),
+            NavButton(
+                text: "next",
+                icon: Icons.arrow_forward_outlined,
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CameraInstructionPage(
+                        waterType: waterType,
+                        waterInfo: waterInfo,
+                      ),
                     ),
-                    child: IconButton(
-                      key: const Key('nextButton'),
-                      padding: const EdgeInsets.all(10),
-                      color: Colors.black,
-                      icon: const Icon(Icons.arrow_forward_outlined),
-                      iconSize: 60,
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CameraInstructionPage(
-                              waterType: waterType,
-                              waterInfo: waterInfo,
-                            ),
-                          ),
-                          (route) => false,
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
-                    "next",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontFamily: "Comfortaa"),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                ])),
+                    (route) => false,
+                  );
+                }),
           ],
         ));
   }

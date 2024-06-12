@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:water_quality_app/objects/chemical_standard.dart'
     show epaStandards;
 import 'package:water_quality_app/pages/source_description.dart';
+import 'package:water_quality_app/widgets/buttons.dart';
 import 'package:water_quality_app/widgets/chemical_result_listing.dart';
 
 import '../objects/app_state.dart';
@@ -37,24 +38,6 @@ class _ResultsPagePageState extends State<ResultsPage> {
     fontWeight: FontWeight.w700,
     fontFamily: 'Comfortaa',
   );
-
-  Widget resultsPageButton(
-          {required String text, required Function() onPressed}) =>
-      Container(
-        width: 185,
-        height: 40,
-        decoration: BoxDecoration(
-          color: Colors.cyan,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: TextButton(
-          onPressed: onPressed,
-          child: Text(
-            text,
-            style: resultsPageTextStyle,
-          ),
-        ),
-      );
 
   // created method for getting user current location
   Future<Position> getUserCurrentLocation() async {
@@ -136,7 +119,7 @@ class _ResultsPagePageState extends State<ResultsPage> {
               children: [
                 const Spacer(),
                 Consumer<AppState>(builder: (context, appState, child) {
-                  return resultsPageButton(
+                  return WaterTextButton(
                     text: 'add to database',
                     onPressed: () async {
                       debugPrint("Started to add");

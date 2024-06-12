@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:water_quality_app/pages/results.dart';
+import 'package:water_quality_app/widgets/buttons.dart';
 
 // RGB class storing all RGB information from image file
 class RGBImageCheckPage extends StatelessWidget {
@@ -29,8 +30,9 @@ class RGBImageCheckPage extends StatelessWidget {
                 height: 400,
                 child: Image(image: FileImage(image)),
               ),
-              ElevatedButton(
-                child: const Text("Enter Results"),
+              const SizedBox(height: 10),
+              WaterTextButton(
+                text: "Enter Results",
                 onPressed: () {
                   Navigator.push(
                       context,
