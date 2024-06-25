@@ -206,7 +206,7 @@ final epaStandards = List<ChemicalStandard>.unmodifiable(const [
       CSElement(color: Color.fromARGB(255, 231, 163, 182), value: 10),
     ],
   ),
-  /*ChemicalStandard(
+  ChemicalStandard(
     name: "Mercury",
     units: "mg/L",
     lo: 0.0,
@@ -214,7 +214,17 @@ final epaStandards = List<ChemicalStandard>.unmodifiable(const [
     description: "EPA recommended limit: 0.002 mg/L\n\n"
         "Mercury is a natrually occuring element that occurs from the "
         "degassing of the earth's crust. High levels can cause kidney damage.",
-  ),*/
+    swatches: [
+      CSElement(color: Color.fromARGB(255, 244, 228, 234), value: 0),
+      CSElement(color: Color.fromARGB(255, 216, 207, 228), value: 0.002),
+      CSElement(color: Color.fromARGB(255, 187, 163, 197), value: 0.005),
+      CSElement(color: Color.fromARGB(255, 173, 140, 181), value: 0.01),
+      CSElement(color: Color.fromARGB(255, 134, 94, 150), value: 0.02),
+      CSElement(color: Color.fromARGB(255, 97, 72, 136), value: 0.04),
+      CSElement(color: Color.fromARGB(255, 61, 44, 115), value: 0.08),
+    ],
+  ),
+  /*
   ChemicalStandard(
     name: "Free Chlorine",
     units: "mg/L",
@@ -230,7 +240,7 @@ final epaStandards = List<ChemicalStandard>.unmodifiable(const [
       CSElement(color: Color.fromARGB(255, 77, 173, 201), value: 10),
       CSElement(color: Color.fromARGB(255, 73, 164, 197), value: 20),
     ],
-  ),
+  ),*/
   ChemicalStandard(
     name: "Nitrate",
     units: "mg/L",
