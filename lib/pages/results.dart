@@ -58,7 +58,7 @@ class _ResultsPagePageState extends State<ResultsPage> {
   Widget build(BuildContext context) {
     if (textFieldControllers.length < 16) {
       for (var i = 0; i < 16; i++) {
-        textFieldControllers.add(TextEditingController(text: "0"));
+        textFieldControllers.add(TextEditingController(text: "-1"));
       }
     }
     return Scaffold(
@@ -131,9 +131,13 @@ class _ResultsPagePageState extends State<ResultsPage> {
                           textFieldControllers.asMap().entries.map((entry) {
                             int index = entry.key;
                             TextEditingController controller = entry.value;
-                            return epaStandards[index]
-                                .swatches[int.parse(controller.text)]
-                                .value;
+                            double value = int.parse(controller.text) == -1
+                                ? -1
+                                : epaStandards[index]
+                                    .swatches[int.parse(controller.text)]
+                                    .value;
+
+                            return value;
                           }).toList(),
                           loc,
                           widget.waterType,

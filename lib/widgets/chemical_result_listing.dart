@@ -17,6 +17,8 @@ class _ChemicalResultListingState extends State<ChemicalResultListing> {
       widget.standard.swatches[int.parse(widget.controller.text)].value);
 
   Widget CustomRadioButton(Color wcolor, int index) {
+    double value = index == -1 ? -1 : widget.standard.swatches[index].value;
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -30,12 +32,8 @@ class _ChemicalResultListingState extends State<ChemicalResultListing> {
         decoration: BoxDecoration(
             color: wcolor,
             border: Border.all(
-              width: widget.standard
-                      .isValueInRange(widget.standard.swatches[index].value)
-                  ? 1
-                  : 2,
-              color: widget.standard
-                      .isValueInRange(widget.standard.swatches[index].value)
+              width: widget.standard.isValueInRange(value) ? 1 : 2,
+              color: widget.standard.isValueInRange(value)
                   ? Colors.grey
                   : const Color.fromARGB(255, 248, 3, 3),
             ),
@@ -52,26 +50,30 @@ class _ChemicalResultListingState extends State<ChemicalResultListing> {
 
   @override
   Widget build(BuildContext context) {
-    return
-        //Expanded(
-        //child:
-        Card(
+    String selectedValue = int.parse(widget.controller.text) == -1
+        ? "N/A"
+        : "${widget.standard.swatches[int.parse(widget.controller.text)].value}";
+
+    return Card(
       child: ListTile(
         title: SizedBox(
           height: 35,
           child: ListView.builder(
               // This next line does the trick.
               scrollDirection: Axis.horizontal,
-              itemCount: widget.standard.swatches.length,
+              itemCount: widget.standard.swatches.length + 1,
               itemBuilder: (context, index) {
                 return CustomRadioButton(
-                    widget.standard.swatches[index].color, index);
+                    index == 0
+                        ? Colors.black
+                        : widget.standard.swatches[index - 1].color,
+                    index - 1);
               }),
+          //CustomRadioButton(Colors.black, 0),
         ),
         subtitle: Row(
           children: [
-            Text(
-                '${widget.standard.name}: ${widget.standard.swatches[int.parse(widget.controller.text)].value}'),
+            Text('${widget.standard.name}: $selectedValue'),
             const Spacer(),
             Text(
                 'Ideal: ${widget.standard.lo}-${widget.standard.hi} ${widget.standard.units ?? ''}'),
