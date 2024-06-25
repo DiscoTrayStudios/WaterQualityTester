@@ -10,6 +10,7 @@ import 'package:water_quality_app/objects/chemical_standard.dart'
 import 'package:water_quality_app/pages/source_description.dart';
 import 'package:water_quality_app/widgets/buttons.dart';
 import 'package:water_quality_app/widgets/chemical_result_listing.dart';
+import 'package:water_quality_app/widgets/loading.dart';
 
 import '../objects/app_state.dart';
 
@@ -31,7 +32,7 @@ class ResultsPage extends StatefulWidget {
 
 class _ResultsPagePageState extends State<ResultsPage> {
   List<TextEditingController> textFieldControllers = List.empty(growable: true);
-
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
   static const resultsPageTextStyle = TextStyle(
     color: Colors.black,
     fontSize: 16,
@@ -123,6 +124,7 @@ class _ResultsPagePageState extends State<ResultsPage> {
                     text: 'add to database',
                     onPressed: () async {
                       debugPrint("Started to add");
+                      Loadings.showLoading(context, _keyLoader);
                       Position loc = await getUserCurrentLocation();
                       //Position loc = Position(longitude: 10, latitude: 10, timestamp: DateTime.now(), accuracy: 0, altitude: 0, altitudeAccuracy: 0, heading: 0, headingAccuracy: 0, speed: 0, speedAccuracy: 0);
                       debugPrint(loc.toString());
@@ -144,6 +146,9 @@ class _ResultsPagePageState extends State<ResultsPage> {
                           widget.waterInfo,
                           DateTime.now());
                       debugPrint("added to database");
+                      Navigator.of(_keyLoader.currentContext!,
+                              rootNavigator: true)
+                          .pop();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
