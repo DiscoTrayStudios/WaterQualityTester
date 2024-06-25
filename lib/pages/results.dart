@@ -33,6 +33,7 @@ class ResultsPage extends StatefulWidget {
 class _ResultsPagePageState extends State<ResultsPage> {
   List<TextEditingController> textFieldControllers = List.empty(growable: true);
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  String notes = "none";
   static const resultsPageTextStyle = TextStyle(
     color: Colors.black,
     fontSize: 16,
@@ -90,18 +91,10 @@ class _ResultsPagePageState extends State<ResultsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Padding(
-            padding: EdgeInsets.only(top: 16, bottom: 10),
-            child: Column(
-              children: [
-                Text(
-                  'Click on each tile in the list to learn more',
-                  style: resultsPageTextStyle,
-                ),
-                Text(
-                  'about the parameters being measured.',
-                  style: resultsPageTextStyle,
-                ),
-              ],
+            padding: EdgeInsets.only(top: 16, bottom: 10, left: 10, right: 10),
+            child: Text(
+              'Click on each tile in the list to learn more about the parameters being measured.',
+              style: resultsPageTextStyle,
             ),
           ),
           Expanded(
@@ -111,6 +104,28 @@ class _ResultsPagePageState extends State<ResultsPage> {
                 standard: epaStandards[index],
                 controller: textFieldControllers[index],
               ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 10, bottom: 5, left: 5, right: 5),
+            child: Text(
+              "Observation Notes:",
+              style: resultsPageTextStyle,
+            ),
+          ),
+          TextFormField(
+            onChanged: (value) {
+              notes = value;
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.all(10.0),
+              hintText: 'Enter notes here',
             ),
           ),
           Container(
@@ -144,6 +159,7 @@ class _ResultsPagePageState extends State<ResultsPage> {
                           loc,
                           widget.waterType,
                           widget.waterInfo,
+                          notes,
                           DateTime.now());
                       debugPrint("added to database");
                       Navigator.of(_keyLoader.currentContext!,

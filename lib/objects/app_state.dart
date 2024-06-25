@@ -20,12 +20,18 @@ class AppState extends ChangeNotifier {
 
   AppState(this.firestore, this.auth, this.storage);
 
-  Future<void> addStrip(File image, List<double> colors, Position loc,
-      String waterType, String waterInfo, DateTime timestamp) async {
+  Future<void> addStrip(
+      File image,
+      List<double> colors,
+      Position loc,
+      String waterType,
+      String waterInfo,
+      String notes,
+      DateTime timestamp) async {
     var record = firestore.collection("testInstances");
     final imageLink = await uploadImage(image);
     record.doc().set(toFirebaseRecord(imageLink, colors, loc.latitude,
-        loc.longitude, waterType, waterInfo, timestamp));
+        loc.longitude, waterType, waterInfo, notes, timestamp));
   }
 
   Map<String, dynamic> toFirebaseRecord(
@@ -35,6 +41,7 @@ class AppState extends ChangeNotifier {
       double longitude,
       String waterType,
       String waterInfo,
+      String notes,
       DateTime timestamp) {
     return {
       "image": imageLink,
@@ -43,6 +50,7 @@ class AppState extends ChangeNotifier {
       "longitude": longitude,
       "Water Type": waterType,
       "Water Info": waterInfo,
+      "Notes": notes,
       "pH": colors[0],
       "Hardness": colors[1],
       "Hydrogen Sulfide": colors[2],

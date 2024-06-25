@@ -39,7 +39,7 @@ class _ChemicalResultListingState extends State<ChemicalResultListing> {
             ),
             borderRadius: const BorderRadius.all(Radius.circular(5))),
         child: index == double.parse(widget.controller.text)
-            ? Icon(Icons.check,
+            ? Icon(index == -1 ? Icons.question_mark : Icons.check,
                 color: wcolor.computeLuminance() > 0.179
                     ? Colors.black
                     : Colors.white)
@@ -51,7 +51,7 @@ class _ChemicalResultListingState extends State<ChemicalResultListing> {
   @override
   Widget build(BuildContext context) {
     String selectedValue = int.parse(widget.controller.text) == -1
-        ? "N/A"
+        ? "Unknown"
         : "${widget.standard.swatches[int.parse(widget.controller.text)].value}";
 
     return Card(
