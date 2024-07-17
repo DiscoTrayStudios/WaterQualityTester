@@ -1,4 +1,4 @@
-package com.example.water_quality_app
+package io.github.discotraystudios.water_quality_app
 
 import io.flutter.embedding.android.FlutterActivity
 

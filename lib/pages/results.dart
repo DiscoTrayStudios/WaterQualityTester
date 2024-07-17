@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +33,7 @@ class ResultsPage extends StatefulWidget {
 
 class _ResultsPagePageState extends State<ResultsPage> {
   List<TextEditingController> textFieldControllers = List.empty(growable: true);
-  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  bool adding = false;
   String notes = "none";
   static const resultsPageTextStyle = TextStyle(
     color: Colors.black,
@@ -43,6 +44,8 @@ class _ResultsPagePageState extends State<ResultsPage> {
 
   // created method for getting user current location
   Future<Position> getUserCurrentLocation() async {
+    bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    debugPrint("Location enabled? $isLocationServiceEnabled");
     await Geolocator.requestPermission().then((value) {
       debugPrint(value.toString());
     }).onError((error, stackTrace) async {
@@ -50,10 +53,55 @@ class _ResultsPagePageState extends State<ResultsPage> {
       debugPrint("ERROR $error");
     });
     debugPrint("requested permissions");
+    //return Geolocator.getLastKnownPosition();
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best,
         timeLimit: const Duration(seconds: 15),
         forceAndroidLocationManager: true);
+  }
+
+  void addToDatabase(AppState appState) async {
+    debugPrint("Started to add");
+    Position loc = await getUserCurrentLocation();
+    /*Position loc = Position(
+                          longitude: 10,
+                          latitude: 10,
+                          timestamp: DateTime.now(),
+                          accuracy: 0,
+                          altitude: 0,
+                          altitudeAccuracy: 0,
+                          heading: 0,
+                          headingAccuracy: 0,
+                          speed: 0,
+                          speedAccuracy: 0);*/
+    debugPrint(loc.toString());
+    await Future.delayed(const Duration(seconds: 1));
+    debugPrint("Time's up!");
+    await appState.addStrip(
+        widget.image,
+        textFieldControllers.asMap().entries.map((entry) {
+          int index = entry.key;
+          TextEditingController controller = entry.value;
+          double value = int.parse(controller.text) == -1
+              ? -1
+              : epaStandards[index].swatches[int.parse(controller.text)].value;
+
+          return value;
+        }).toList(),
+        loc,
+        widget.waterType,
+        widget.waterInfo,
+        notes,
+        DateTime.now());
+
+    debugPrint("added to database");
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const SourceDescriptionPage(),
+        ),
+        (route) => false);
   }
 
   @override
@@ -135,44 +183,25 @@ class _ResultsPagePageState extends State<ResultsPage> {
               children: [
                 const Spacer(),
                 Consumer<AppState>(builder: (context, appState, child) {
-                  return WaterTextButton(
-                    text: 'add to database',
-                    onPressed: () async {
-                      debugPrint("Started to add");
-                      Loadings.showLoading(context, _keyLoader);
-                      Position loc = await getUserCurrentLocation();
-                      //Position loc = Position(longitude: 10, latitude: 10, timestamp: DateTime.now(), accuracy: 0, altitude: 0, altitudeAccuracy: 0, heading: 0, headingAccuracy: 0, speed: 0, speedAccuracy: 0);
-                      debugPrint(loc.toString());
-                      await appState.addStrip(
-                          widget.image,
-                          textFieldControllers.asMap().entries.map((entry) {
-                            int index = entry.key;
-                            TextEditingController controller = entry.value;
-                            double value = int.parse(controller.text) == -1
-                                ? -1
-                                : epaStandards[index]
-                                    .swatches[int.parse(controller.text)]
-                                    .value;
-
-                            return value;
-                          }).toList(),
-                          loc,
-                          widget.waterType,
-                          widget.waterInfo,
-                          notes,
-                          DateTime.now());
-                      debugPrint("added to database");
-                      Navigator.of(_keyLoader.currentContext!,
-                              rootNavigator: true)
-                          .pop();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SourceDescriptionPage(),
-                        ),
-                      );
-                    },
-                  );
+                  return adding
+                      ? const Column(children: [
+                          SpinKitWaveSpinner(color: Colors.blueGrey),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "uploading..",
+                          )
+                        ])
+                      : WaterTextButton(
+                          text: 'upload',
+                          onPressed: () async {
+                            setState(() {
+                              adding = true;
+                              addToDatabase(appState);
+                            });
+                          },
+                        );
                 }),
                 const Spacer(),
               ],

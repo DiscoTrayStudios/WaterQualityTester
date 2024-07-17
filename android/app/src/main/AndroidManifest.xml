@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.water_quality_app">
+    package="io.github.discotraystudios.water_quality_app">
    
    <!-- Permission for accessing `camera` -->
    <uses-permission android:name="android.permission.CAMERA"/>
