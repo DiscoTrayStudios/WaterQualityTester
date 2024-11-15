@@ -11,7 +11,6 @@ import 'package:water_quality_app/objects/chemical_standard.dart'
 import 'package:water_quality_app/pages/source_description.dart';
 import 'package:water_quality_app/widgets/buttons.dart';
 import 'package:water_quality_app/widgets/chemical_result_listing.dart';
-import 'package:water_quality_app/widgets/loading.dart';
 
 import '../objects/app_state.dart';
 
