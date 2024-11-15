@@ -1,11 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'package:water_quality_app/pages/source_description.dart';
 import 'firebase_options.dart';
 import 'package:water_quality_app/firebase.dart' as firebase;
+
+import 'objects/app_state.dart';
 
 List<CameraDescription> cameras = [];
 Future<void> main() async {
@@ -30,5 +35,10 @@ Future<void> main() async {
         debugPrint(e.code);
     }
   }
-  runApp(const Home());
+  runApp(ChangeNotifierProvider(
+    create: ((context) => AppState(FirebaseFirestore.instance, FirebaseAuth.instance, FirebaseStorage.instance)),
+    child: MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.cyan),
+      home: const SourceDescriptionPage(),
+  )));
 }

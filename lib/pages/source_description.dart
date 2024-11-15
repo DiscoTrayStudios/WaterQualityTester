@@ -1,21 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:water_quality_app/pages/test_strip_instructions.dart';
-
-class Home extends StatelessWidget {
-  const Home({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // home navigator for all pages
-    return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.cyan),
-      home: const SourceDescriptionPage(),
-    );
-  }
-}
+import 'package:water_quality_app/widgets/buttons.dart';
 
 class SourceDescriptionPage extends StatefulWidget {
-  const SourceDescriptionPage({Key? key}) : super(key: key);
+  const SourceDescriptionPage({super.key});
   @override
   State<SourceDescriptionPage> createState() => _SourceDescriptionPageState();
 }
@@ -28,6 +16,7 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
           123, 231, 96, 1)); // I want to make this button stand out
 
   String? selectedValue;
+  String waterInfo = "";
   final _dropdownFormKey = GlobalKey<FormState>();
 
   // style cards for listview
@@ -51,7 +40,7 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
         appBar: AppBar(
             centerTitle: true,
             backgroundColor: const Color(0xffB6D6CC),
-            title: const Text("Water Source Description",
+            title: const Text("Water Source",
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 28,
@@ -62,7 +51,7 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
         body: Center(
             child: Column(children: [
           const SizedBox(
-            height: 30,
+            height: 10,
           ),
           Expanded(
               child: Padding(
@@ -143,6 +132,9 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
                                                   fontFamily: "Comfortaa"),
                                             ),
                                             TextFormField(
+                                              onChanged: (value) {
+                                                waterInfo = value;
+                                              },
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
@@ -161,108 +153,80 @@ class _SourceDescriptionPageState extends State<SourceDescriptionPage> {
                                           ],
                                         )),
                                   ),
+                                  const SizedBox(height: 10),
                                   // NEXT BUTTON
-                                  SizedBox(
-                                      child: Column(
-                                          //height: 100.0,
-                                          //width: 18.0,
-                                          children: [
-                                        const SizedBox(height: 20),
-                                        Ink(
-                                          decoration: const ShapeDecoration(
-                                            color: Color(0xffB6D6CC),
-                                            shape: CircleBorder(),
-                                          ),
-                                          child: IconButton(
-                                            key: const Key('nextButton'),
-                                            padding: const EdgeInsets.all(10),
-                                            color: Colors.black,
-                                            icon:
-                                                const Icon(Icons.arrow_forward),
-                                            iconSize: 100,
-                                            onPressed: () {
-                                              if (_dropdownFormKey.currentState!
-                                                  .validate()) {
-                                                // check to make sure there is an input
-                                                if (selectedValue != "DW") {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (ctx) =>
-                                                        AlertDialog(
-                                                      title: const Text(
-                                                          "Disclaimer",
-                                                          style: TextStyle(
-                                                              fontFamily:
-                                                                  "Comfortaa")),
-                                                      content: const Text(
-                                                          "This only tests water for EPA drinking water standards",
-                                                          style: TextStyle(
-                                                              fontFamily:
-                                                                  "Sans")),
-                                                      actions: <Widget>[
-                                                        TextButton(
-                                                          //Navigator.pushAndRemoveUntil() (route) => false
-                                                          onPressed: () {
-                                                            Navigator
-                                                                .pushAndRemoveUntil(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        WaterInstructionPage(),
-                                                              ),
-                                                              (route) => false,
-                                                            );
-                                                            // then go to the next page
-                                                          },
-                                                          child: Container(
-                                                            color: const Color(
-                                                                0xffB6D6CC),
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(14),
-                                                            child: const Text(
-                                                                "OKAY",
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                        "Comfortaa",
-                                                                    color: Colors
-                                                                        .black)),
-                                                          ),
+                                  NavButton(
+                                    text: "next",
+                                    icon: Icons.arrow_forward,
+                                    onPressed: () {
+                                      if (_dropdownFormKey.currentState!
+                                          .validate()) {
+                                        // check to make sure there is an input
+                                        if (selectedValue != "DW") {
+                                          showDialog(
+                                            context: context,
+                                            builder: (ctx) => AlertDialog(
+                                              title: const Text("Disclaimer",
+                                                  style: TextStyle(
+                                                      fontFamily: "Comfortaa")),
+                                              content: const Text(
+                                                  "This only tests water for EPA drinking water standards",
+                                                  style: TextStyle(
+                                                      fontFamily: "Sans")),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  //Navigator.pushAndRemoveUntil() (route) => false
+                                                  onPressed: () {
+                                                    Navigator
+                                                        .pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            WaterInstructionPage(
+                                                          waterType:
+                                                              selectedValue!,
+                                                          waterInfo: waterInfo,
                                                         ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                } // check to see if it is drinking water
-                                                // then add alert dialog box and move on, else move on
+                                                      ),
+                                                      (route) => false,
+                                                    );
+                                                    // then go to the next page
+                                                  },
+                                                  child: Container(
+                                                    color:
+                                                        const Color(0xffB6D6CC),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            14),
+                                                    child: const Text("OKAY",
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                "Comfortaa",
+                                                            color:
+                                                                Colors.black)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        } // check to see if it is drinking water
+                                        // then add alert dialog box and move on, else move on
 
-                                                else {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          WaterInstructionPage(),
-                                                    ),
-                                                  );
-                                                }
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        const Text(
-                                          "next",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 25,
-                                              fontFamily: "Comfortaa"),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                      ]))
+                                        else {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  WaterInstructionPage(
+                                                waterType: selectedValue!,
+                                                waterInfo: waterInfo,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    },
+                                  ),
                                 ],
                               )))
                   //)

@@ -1,17 +1,39 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:geolocator/geolocator.dart';
-import 'package:water_test_scanner/water_test_scanning.dart';
+import 'package:provider/provider.dart';
 
 import 'package:water_quality_app/objects/chemical_standard.dart'
     show epaStandards;
 import 'package:water_quality_app/pages/source_description.dart';
+import 'package:water_quality_app/widgets/buttons.dart';
 import 'package:water_quality_app/widgets/chemical_result_listing.dart';
 
-class ResultsPage extends StatelessWidget {
-  const ResultsPage({super.key, required this.results});
-  final ColorDetectionResult results;
+import '../objects/app_state.dart';
 
+class ResultsPage extends StatefulWidget {
+  const ResultsPage(
+      {super.key,
+      required this.image,
+      required this.waterType,
+      required this.waterInfo});
+
+  final File image;
+
+  final String waterType;
+  final String waterInfo;
+
+  @override
+  State<ResultsPage> createState() => _ResultsPagePageState();
+}
+
+class _ResultsPagePageState extends State<ResultsPage> {
+  List<TextEditingController> textFieldControllers = List.empty(growable: true);
+  bool adding = false;
+  String notes = "none";
   static const resultsPageTextStyle = TextStyle(
     color: Colors.black,
     fontSize: 16,
@@ -19,37 +41,75 @@ class ResultsPage extends StatelessWidget {
     fontFamily: 'Comfortaa',
   );
 
-  Widget resultsPageButton(
-          {required String text, required Function() onPressed}) =>
-      Container(
-        width: 185,
-        height: 40,
-        decoration: BoxDecoration(
-          color: Colors.cyan,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: TextButton(
-          onPressed: onPressed,
-          child: Text(
-            text,
-            style: resultsPageTextStyle,
-          ),
-        ),
-      );
-
   // created method for getting user current location
   Future<Position> getUserCurrentLocation() async {
-    await Geolocator.requestPermission()
-        .then((value) {})
-        .onError((error, stackTrace) async {
+    bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    debugPrint("Location enabled? $isLocationServiceEnabled");
+    await Geolocator.requestPermission().then((value) {
+      debugPrint(value.toString());
+    }).onError((error, stackTrace) async {
       await Geolocator.requestPermission();
       debugPrint("ERROR $error");
     });
-    return await Geolocator.getCurrentPosition();
+    debugPrint("requested permissions");
+    //return Geolocator.getLastKnownPosition();
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+        timeLimit: const Duration(seconds: 15),
+        forceAndroidLocationManager: true);
+  }
+
+  void addToDatabase(AppState appState) async {
+    debugPrint("Started to add");
+    Position loc = await getUserCurrentLocation();
+    /*Position loc = Position(
+                          longitude: 10,
+                          latitude: 10,
+                          timestamp: DateTime.now(),
+                          accuracy: 0,
+                          altitude: 0,
+                          altitudeAccuracy: 0,
+                          heading: 0,
+                          headingAccuracy: 0,
+                          speed: 0,
+                          speedAccuracy: 0);*/
+    debugPrint(loc.toString());
+    await Future.delayed(const Duration(seconds: 1));
+    debugPrint("Time's up!");
+    await appState.addStrip(
+        widget.image,
+        textFieldControllers.asMap().entries.map((entry) {
+          int index = entry.key;
+          TextEditingController controller = entry.value;
+          double value = int.parse(controller.text) == -1
+              ? -1
+              : epaStandards[index].swatches[int.parse(controller.text)].value;
+
+          return value;
+        }).toList(),
+        loc,
+        widget.waterType,
+        widget.waterInfo,
+        notes,
+        DateTime.now());
+
+    debugPrint("added to database");
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const SourceDescriptionPage(),
+        ),
+        (route) => false);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (textFieldControllers.length < 16) {
+      for (var i = 0; i < 16; i++) {
+        textFieldControllers.add(TextEditingController(text: "-1"));
+      }
+    }
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -78,18 +138,10 @@ class ResultsPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Padding(
-            padding: EdgeInsets.only(top: 16, bottom: 10),
-            child: Column(
-              children: [
-                Text(
-                  'Click on each tile in the list to learn more',
-                  style: resultsPageTextStyle,
-                ),
-                Text(
-                  'about the parameters being measured.',
-                  style: resultsPageTextStyle,
-                ),
-              ],
+            padding: EdgeInsets.only(top: 16, bottom: 10, left: 10, right: 10),
+            child: Text(
+              'Click on each tile in the list to learn more about the parameters being measured.',
+              style: resultsPageTextStyle,
             ),
           ),
           Expanded(
@@ -97,8 +149,30 @@ class ResultsPage extends StatelessWidget {
               itemCount: 16,
               itemBuilder: (context, index) => ChemicalResultListing(
                 standard: epaStandards[index],
-                result: results.colors[index],
+                controller: textFieldControllers[index],
               ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 10, bottom: 5, left: 5, right: 5),
+            child: Text(
+              "Observation Notes:",
+              style: resultsPageTextStyle,
+            ),
+          ),
+          TextFormField(
+            onChanged: (value) {
+              notes = value;
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.all(10.0),
+              hintText: 'Enter notes here',
             ),
           ),
           Container(
@@ -107,15 +181,27 @@ class ResultsPage extends StatelessWidget {
             child: Row(
               children: [
                 const Spacer(),
-                resultsPageButton(
-                  text: 'add to database',
-                  onPressed: () => debugPrint('Not yet implemented'),
-                ),
-                const Spacer(),
-                resultsPageButton(
-                  text: 'plot your location',
-                  onPressed: () => debugPrint('Not yet implemented'),
-                ),
+                Consumer<AppState>(builder: (context, appState, child) {
+                  return adding
+                      ? const Column(children: [
+                          SpinKitWaveSpinner(color: Colors.blueGrey),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "uploading..",
+                          )
+                        ])
+                      : WaterTextButton(
+                          text: 'upload',
+                          onPressed: () async {
+                            setState(() {
+                              adding = true;
+                              addToDatabase(appState);
+                            });
+                          },
+                        );
+                }),
                 const Spacer(),
               ],
             ),

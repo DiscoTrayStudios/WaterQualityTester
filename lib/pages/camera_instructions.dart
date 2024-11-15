@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:water_quality_app/widgets/camera.dart';
+import 'package:water_quality_app/widgets/buttons.dart';
+import 'package:water_quality_app/pages/camera.dart';
+import 'package:water_quality_app/widgets/instructions.dart';
 
 class CameraInstructionPage extends StatelessWidget {
-  CameraInstructionPage({super.key});
+  CameraInstructionPage(
+      {super.key, required this.waterType, required this.waterInfo});
+
+  final String waterType;
+  final String waterInfo;
 
   // style elevated button
   final ButtonStyle styleButton = ElevatedButton.styleFrom(
@@ -12,8 +18,6 @@ class CameraInstructionPage extends StatelessWidget {
 
   // style cards for listview
   final EdgeInsets margin = const EdgeInsets.symmetric(vertical: 10);
-  final TextStyle textstyle = const TextStyle(
-      fontSize: 20, fontStyle: FontStyle.italic, fontFamily: "Sans");
 
   @override
   Widget build(BuildContext context) {
@@ -33,146 +37,74 @@ class CameraInstructionPage extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           children: <Widget>[
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             Container(
                 color: const Color(0xffDDCFD9),
-                child: Column(
+                child: const Column(
                   children: [
-                    const SizedBox(
+                    SizedBox(
                       height: 20,
                     ),
-                    const Center(
+                    Center(
                         child: Text("camera instructions",
                             style: TextStyle(
                                 fontFamily: "Comfortaa",
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700))),
-                    const SizedBox(
-                      height: 20,
+                    SizedBox(
+                      height: 10,
                     ),
                     ListTile(
                       // this tile needs to stand out
                       title: Text("Note: TAKE PICTURES USING A DARK BACKGROUND",
-                          style: textstyle),
-                    ),
-                    const SizedBox(height: 20),
-                    ListTile(
-                      leading: const CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Color(0xff1889e6),
-                        child: Text(
-                          "1",
                           style: TextStyle(
-                              fontFamily: "Comfortaa",
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      title: Text("Use the camera in a VERTICAL ORIENTATION",
-                          style: textstyle),
+                              fontSize: 20,
+                              fontStyle: FontStyle.italic,
+                              fontFamily: "Sans")),
                     ),
-                    const SizedBox(height: 20),
-                    ListTile(
-                      leading: const CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Color(0xff1889e6),
-                        child: Text(
-                          "2",
-                          style: TextStyle(
-                              fontFamily: "Comfortaa",
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      title: Text(
-                          "Lineup the water test strip within the border of the overlay",
-                          style: textstyle),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ListTile(
-                      leading: const CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Color(0xff1889e6),
-                        child: Text(
-                          "3",
-                          style: TextStyle(
-                              fontFamily: "Comfortaa",
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      title: Text(
+                    SizedBox(height: 10),
+                    Instructions(
+                        number: "1",
+                        text: "Use the camera in a VERTICAL ORIENTATION"),
+                    SizedBox(height: 10),
+                    Instructions(
+                        number: "2",
+                        text:
+                            "Lineup the water test strip within the border of the overlay"),
+                    SizedBox(height: 10),
+                    Instructions(
+                      number: "3",
+                      text:
                           "IMPORTANT!!! Put the white part of the test strip at the very top of the image preview",
-                          style: textstyle),
                     ),
-                    const SizedBox(
-                      height: 20,
+                    SizedBox(
+                      height: 10,
                     ),
-                    ListTile(
-                      leading: const CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Color(0xff1889e6),
-                        child: Text(
-                          "4",
-                          style: TextStyle(
-                              fontFamily: "Comfortaa",
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      title: Text(
+                    Instructions(
+                      number: "4",
+                      text:
                           "Make sure to use a DARK background (preferably black)",
-                          style: textstyle),
                     ),
-                    const SizedBox(
-                      height: 20,
+                    SizedBox(
+                      height: 10,
                     ),
                   ],
                 )),
             const SizedBox(height: 20),
-            SizedBox(
-                child: Column(
-                    //height: 100.0,
-                    //width: 18.0,
-                    children: [
-                  Ink(
-                    decoration: const ShapeDecoration(
-                      color: Color(0xffB6D6CC),
-                      shape: CircleBorder(),
+            NavButton(
+              text: "open camera",
+              icon: Icons.camera_alt,
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CameraPage(
+                          waterType: waterType, waterInfo: waterInfo),
                     ),
-                    child: IconButton(
-                      key: const Key('cameraButton'),
-                      padding: const EdgeInsets.all(10),
-                      color: Colors.black,
-                      icon: const Icon(Icons.camera_alt),
-                      iconSize: 100,
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CameraPage(),
-                            ),
-                            (route) => false);
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
-                    "open camera",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 25,
-                        fontFamily: "Comfortaa"),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                ])),
+                    (route) => false);
+              },
+            ),
           ],
         ));
   }

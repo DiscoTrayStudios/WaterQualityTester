@@ -9,6 +9,8 @@
 .history
 .svn/
 migrate_working_dir/
+/opencv2.framework/
+/include/
 
 # IntelliJ related
 *.iml
@@ -47,3 +49,4 @@ app.*.map.json
 /web/index.html
 /ios/Runner/AppDelegate.swift
 /android/app/src/main/AndroidManifest.xml
+include-20240516T204710Z-001.zip

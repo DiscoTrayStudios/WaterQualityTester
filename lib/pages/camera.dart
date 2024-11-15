@@ -1,14 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/services.dart';
 
 import 'package:water_quality_app/main.dart';
-import 'package:water_quality_app/pages/results.dart';
-import 'package:water_test_scanner/water_test_scanning.dart';
 
 class CameraPage extends StatefulWidget {
-  const CameraPage({Key? key}) : super(key: key);
+  const CameraPage(
+      {super.key, required this.waterType, required this.waterInfo});
+
+  final String waterType;
+  final String waterInfo;
 
   @override
   State<CameraPage> createState() => _CameraPageState();
@@ -71,16 +72,6 @@ class _CameraPageState extends State<CameraPage> {
     super.dispose();
   }
 
-  Future<ColorDetectionResult> scanColors(String path) async {
-    final ByteData keyBytes =
-        await rootBundle.load('assets/colorkey3asset.jpg');
-    Uint8List keyList = keyBytes.buffer.asUint8List();
-    ColorDetectionResult results =
-        await ColorStripDetector.detectColors(path, keyList);
-    print(results.colors);
-    return results;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,60 +124,15 @@ class _CameraPageState extends State<CameraPage> {
 
               if (!mounted) return;
 
-              ColorDetectionResult result = await scanColors(imageFile.path);
-
-              switch (result.exitCode) {
-                case 0: // good
-                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ResultsPage(results: result)));
-                  break;
-                case 1: // can't find strip
-                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                  ScaffoldMessenger.of(context)
-                      .showMaterialBanner(MaterialBanner(
-                    content: const Text("The camera couldn't find the test "
-                        "strip. Please try again."),
-                    actions: [
-                      TextButton(
-                        onPressed: ScaffoldMessenger.of(context)
-                            .hideCurrentMaterialBanner,
-                        child: const Text("Dismiss"),
-                      ),
-                    ],
-                  ));
-                  break;
-                case 3: // can't find color key
-                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                  ScaffoldMessenger.of(context)
-                      .showMaterialBanner(MaterialBanner(
-                    content: const Text("The camera couldn't find the color "
-                        "key. Please try again."),
-                    actions: [
-                      TextButton(
-                        onPressed: ScaffoldMessenger.of(context)
-                            .hideCurrentMaterialBanner,
-                        child: const Text("Dismiss"),
-                      ),
-                    ],
-                  ));
-                  break;
-                default: // exit code 5: can't find image, and all others
-                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                  ScaffoldMessenger.of(context)
-                      .showMaterialBanner(MaterialBanner(
-                    content:
-                        const Text("Something went wrong. Please try again."),
-                    actions: [
-                      TextButton(
-                        onPressed: ScaffoldMessenger.of(context)
-                            .hideCurrentMaterialBanner,
-                        child: const Text("Dismiss"),
-                      ),
-                    ],
-                  ));
-                  break;
-              }
+              // If the picture was taken, display with results
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => RGBImageCheckPage(
+                      image: imageFile,
+                      waterType: widget.waterType,
+                      waterInfo: widget.waterInfo),
+                ),
+              );
             }
           } catch (e) {
             // log the error to the console, if error occurs

@@ -1,80 +1,91 @@
 import 'package:flutter/material.dart';
 
-import 'package:water_test_scanner/water_test_scanning.dart';
-
 import 'package:water_quality_app/objects/chemical_standard.dart';
 
-class ChemicalResultListing extends StatelessWidget {
-  const ChemicalResultListing({
-    super.key,
-    required this.standard,
-    required this.result,
-  });
+class ChemicalResultListing extends StatefulWidget {
+  const ChemicalResultListing(
+      {super.key, required this.standard, required this.controller});
   final ChemicalStandard standard;
-  final ColorOutput result;
+  final TextEditingController controller;
 
-  bool get isStandardMet => standard.isValueInRange(result.value);
+  @override
+  State<ChemicalResultListing> createState() => _ChemicalResultListingState();
+}
+
+class _ChemicalResultListingState extends State<ChemicalResultListing> {
+  bool get isStandardMet => widget.standard.isValueInRange(
+      widget.standard.swatches[int.parse(widget.controller.text)].value);
+
+  Widget CustomRadioButton(Color wcolor, int index) {
+    double value = index == -1 ? -1 : widget.standard.swatches[index].value;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          widget.controller.text = index.toString();
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        height: 35.0,
+        width: 35.0,
+        decoration: BoxDecoration(
+            color: wcolor,
+            border: Border.all(
+              width: widget.standard.isValueInRange(value) ? 1 : 2,
+              color: widget.standard.isValueInRange(value)
+                  ? Colors.grey
+                  : const Color.fromARGB(255, 248, 3, 3),
+            ),
+            borderRadius: const BorderRadius.all(Radius.circular(5))),
+        child: index == double.parse(widget.controller.text)
+            ? Icon(index == -1 ? Icons.question_mark : Icons.check,
+                color: wcolor.computeLuminance() > 0.179
+                    ? Colors.black
+                    : Colors.white)
+            : null,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final resultColor =
-        Color.fromARGB(255, result.red, result.green, result.blue);
-    final displayValue = result.value.isFinite
-        ? ((result.value * 1000).truncate() / 1000)
-            .toString()
-            .replaceFirst(RegExp(r'.0$'), '')
-        : 'Unknown';
+    String selectedValue = int.parse(widget.controller.text) == -1
+        ? "Unknown"
+        : "${widget.standard.swatches[int.parse(widget.controller.text)].value}";
 
     return Card(
       child: ListTile(
-        tileColor: isStandardMet
-            ? const Color.fromARGB(255, 182, 214, 204)
-            : const Color.fromARGB(255, 255, 200, 200),
-        leading: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.square_rounded,
-              color: resultColor,
-              size: 50,
-              shadows: const [
-                Shadow(
-                  offset: Offset(2, 2),
-                  blurRadius: 5,
-                ),
-              ],
-            ),
-            const SizedBox(width: 10),
-            Text(
-              '$displayValue ${standard.units ?? ''}',
-              style: TextStyle(
-                color: isStandardMet ? Colors.black : Colors.red,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        title: Row(
-          children: [
-            const Spacer(),
-            Text(standard.name),
-          ],
+        title: SizedBox(
+          height: 35,
+          child: ListView.builder(
+              // This next line does the trick.
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.standard.swatches.length + 1,
+              itemBuilder: (context, index) {
+                return CustomRadioButton(
+                    index == 0
+                        ? Colors.black
+                        : widget.standard.swatches[index - 1].color,
+                    index - 1);
+              }),
+          //CustomRadioButton(Colors.black, 0),
         ),
         subtitle: Row(
           children: [
+            Text('${widget.standard.name}: $selectedValue'),
             const Spacer(),
             Text(
-                'Ideal: ${standard.lo}-${standard.hi} ${standard.units ?? ''}'),
+                'Ideal: ${widget.standard.lo}-${widget.standard.hi} ${widget.standard.units ?? ''}'),
           ],
         ),
-        onTap: () => standard.description == null
+        onTap: () => widget.standard.description == null
             ? null
             : showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text(standard.name),
-                  content: Text(standard.description ?? ''),
+                  title: Text(widget.standard.name),
+                  content: Text(widget.standard.description ?? ''),
                   actions: [
                     ElevatedButton(
                       onPressed: () => Navigator.pop(context),
